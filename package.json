@@ -16,6 +16,9 @@
     "url": "https://github.com/placraftic/mcp-server/issues"
   },
   "homepage": "https://placraftic.com/solutions/mcp",
+  "publishConfig": {
+    "access": "public"
+  },
   "files": [
     "dist",
     "README.md",
