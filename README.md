@@ -121,6 +121,12 @@ The Placraftic MCP server exposes 6 live catalog, shipping, and studio resources
 - **`list_customers`**: Search customer directory by name, phone, or email with total orders count and lifetime spend.
 - **`get_customer_profile`**: Retrieve complete customer profile, lifetime value, breakdown of orders by status, and order history.
 
+### Slicing, Quoting & Instant Ordering
+- **`calculate_quote`**: Upload a local 3D model file (STL, OBJ, 3MF, STEP) along with chosen material and print quality to calculate precise manufacturing cost, filament weight, print time, and itemized fee breakdown. Automatically polls asynchronous slicing when calculation is in progress.
+- **`submit_slicing_job`**: Upload a local 3D model file to the studio slicing engine to initiate background toolpath generation. Returns a unique slicing `jobId`.
+- **`get_slicing_status`**: Check asynchronous slicing progress, status (`pending`, `processing`, `done`, `failed`), filament consumption, print time, and error diagnostics by `jobId`.
+- **`create_order`**: Create a complete production order directly from the agent. Accepts customer contact details, one or more local 3D model files, selected materials, qualities, quantities, optional finishings, and delivery preferences.
+
 ---
 
 ## Development

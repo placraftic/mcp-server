@@ -11,6 +11,8 @@ import { registerProductsTools } from "./products.js";
 import { registerOrdersTools } from "./orders.js";
 import { registerShippingTools } from "./shipping.js";
 import { registerCustomersTools } from "./customers.js";
+import { registerQuotingTools } from "./quoting.js";
+import { registerSlicingTools } from "./slicing.js";
 
 export function registerAllTools(server: McpServer, client: PlacrafticClient, config: ServerConfig) {
   registerPingTool(server, client, config);
@@ -23,5 +25,7 @@ export function registerAllTools(server: McpServer, client: PlacrafticClient, co
   registerOrdersTools(server, client);
   registerShippingTools(server, client);
   registerCustomersTools(server, client);
+  registerQuotingTools(server, client);
+  registerSlicingTools(server, client);
 }
 

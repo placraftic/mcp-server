@@ -1,5 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { PlacrafticClient } from "../client.js";
 import { formatErrorResult } from "../errors.js";
 
@@ -278,4 +280,129 @@ export function registerOrdersTools(server: McpServer, client: PlacrafticClient)
       }
     },
   );
+
+  server.tool(
+    "create_order",
+    "Submit a new production order with customer contact info, 3D model files (STL, OBJ, 3MF, STEP), materials, and delivery preferences",
+    {
+      customer: z.object({
+        firstName: z.string().describe("Customer first name"),
+        lastName: z.string().describe("Customer last name"),
+        phoneNumber: z.string().describe("Customer phone number in international format (+380...)"),
+        email: z.string().email().describe("Customer email address"),
+        locale: z.string().optional().describe("Locale language code (default: 'uk')"),
+      }),
+      items: z
+        .array(
+          z.object({
+            materialId: z.number().int().positive().describe("Material numeric ID from list_materials"),
+            printingQualityId: z.number().int().positive().describe("Printing quality profile ID from list_qualities"),
+            filePath: z.string().describe("Local filesystem path to 3D model file (.stl, .obj, .3mf, .step)"),
+            quantity: z.number().int().positive().optional().describe("Number of units to manufacture (default: 1)"),
+            finishingIds: z.array(z.number().int().positive()).optional().describe("Array of post-processing finishing service IDs"),
+          }),
+        )
+        .min(1)
+        .describe("List of items to manufacture with 3D model files"),
+      delivery: z
+        .object({
+          deliveryMethodId: z.number().int().positive().optional().describe("Delivery method ID from get_delivery_settings"),
+          cityName: z.string().optional().describe("Recipient city name"),
+          cityRef: z.string().optional().describe("Nova Poshta City Ref"),
+          warehouseName: z.string().optional().describe("Nova Poshta Warehouse description or number"),
+          warehouseRef: z.string().optional().describe("Nova Poshta Warehouse Ref"),
+          streetName: z.string().optional().describe("Street name for courier delivery"),
+          buildingNumber: z.string().optional().describe("Building number for courier delivery"),
+          apartmentNumber: z.string().optional().describe("Apartment number"),
+          npServiceType: z.enum(["WarehouseWarehouse", "WarehouseDoors"]).optional(),
+        })
+        .optional()
+        .describe("Delivery options and shipping destination"),
+    },
+    async ({ customer, items, delivery }) => {
+      try {
+        const formData = new FormData();
+        formData.append("customerFirstName", customer.firstName);
+        formData.append("customerLastName", customer.lastName);
+        formData.append("customerPhoneNumber", customer.phoneNumber);
+        formData.append("customerEmail", customer.email);
+        formData.append("customerLocale", customer.locale || "uk");
+        formData.append("source", "mcp");
+
+        const itemsPayload: Array<{
+          materialId: number;
+          printingQualityId: number;
+          quantity: number;
+          finishingIds?: number[];
+        }> = [];
+
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          const resolvedPath = path.resolve(item.filePath);
+          if (!fs.existsSync(resolvedPath)) {
+            return {
+              isError: true,
+              content: [
+                {
+                  type: "text" as const,
+                  text: `Error: 3D model file for item #${i + 1} not found at path: ${resolvedPath}`,
+                },
+              ],
+            };
+          }
+
+          const fileBuffer = fs.readFileSync(resolvedPath);
+          const fileName = path.basename(resolvedPath);
+          const fileBlob = new Blob([fileBuffer], { type: "application/octet-stream" });
+
+          formData.append("models[]", fileBlob, fileName);
+          itemsPayload.push({
+            materialId: item.materialId,
+            printingQualityId: item.printingQualityId,
+            quantity: item.quantity || 1,
+            finishingIds: item.finishingIds,
+          });
+        }
+
+        formData.append("items", JSON.stringify(itemsPayload));
+
+        if (delivery) {
+          if (delivery.deliveryMethodId) formData.append("deliveryMethodId", String(delivery.deliveryMethodId));
+          if (delivery.cityName) formData.append("deliveryCityName", delivery.cityName);
+          if (delivery.cityRef) formData.append("deliveryCityRef", delivery.cityRef);
+          if (delivery.warehouseName) formData.append("deliveryWarehouseName", delivery.warehouseName);
+          if (delivery.warehouseRef) formData.append("deliveryWarehouseRef", delivery.warehouseRef);
+          if (delivery.streetName) formData.append("deliveryStreetName", delivery.streetName);
+          if (delivery.buildingNumber) formData.append("deliveryBuildingNumber", delivery.buildingNumber);
+          if (delivery.apartmentNumber) formData.append("deliveryApartmentNumber", delivery.apartmentNumber);
+          if (delivery.npServiceType) formData.append("deliveryNpServiceType", delivery.npServiceType);
+        }
+
+        const response = await client.request<OrderDetails>("/orders", {
+          method: "POST",
+          body: formData,
+        });
+
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(
+                {
+                  message: "Order created successfully!",
+                  order: response.data,
+                  latencyMs: response.latencyMs,
+                },
+                null,
+                2,
+              ),
+            },
+          ],
+        };
+      } catch (err) {
+        return formatErrorResult(err);
+      }
+    },
+  );
 }
+
