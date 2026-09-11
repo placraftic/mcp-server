@@ -111,4 +111,27 @@ export function registerAllResources(server: McpServer, client: PlacrafticClient
       };
     },
   );
+
+  // 6. Delivery Settings Resource
+  server.resource(
+    "delivery-settings",
+    "placraftic://delivery/settings",
+    {
+      description: "Studio shipping and delivery configuration: Nova Poshta sender warehouse, pickup address, and active delivery methods",
+      mimeType: "application/json",
+    },
+    async (uri) => {
+      const response = await client.request("/delivery/settings", { method: "GET" });
+      return {
+        contents: [
+          {
+            uri: uri.href,
+            mimeType: "application/json",
+            text: JSON.stringify(response.data, null, 2),
+          },
+        ],
+      };
+    },
+  );
 }
+

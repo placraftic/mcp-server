@@ -73,7 +73,7 @@ claude mcp add placraftic -- npx -y @placraftic/mcp-server
 
 ## MCP Resources
 
-The Placraftic MCP server exposes 5 live catalog and studio resources that clients can read or attach directly into LLM context:
+The Placraftic MCP server exposes 6 live catalog, shipping, and studio resources that clients can read or attach directly into LLM context:
 
 | Resource URI | Description |
 | :--- | :--- |
@@ -82,6 +82,7 @@ The Placraftic MCP server exposes 5 live catalog and studio resources that clien
 | `placraftic://catalog/printers` | Studio 3D printer fleet, active machines, build volumes, technology, and maintenance status |
 | `placraftic://catalog/finishings` | Available post-processing finishing operations, flat fees, and percentage surcharges |
 | `placraftic://catalog/qualities` | Configured print qualities, layer heights, nozzle sizes, and speed modes |
+| `placraftic://delivery/settings` | Current studio delivery configuration: Nova Poshta sender warehouse, pickup address, and shipping methods |
 
 ---
 
@@ -102,6 +103,23 @@ The Placraftic MCP server exposes 5 live catalog and studio resources that clien
 - **`get_finishing`**: Retrieve flat-rate and percentage pricing formulas for a specific finishing operation by ID.
 - **`list_products`**: List preconfigured catalog products with fixed prices and estimated lead times.
 - **`get_product`**: Retrieve complete specifications, media photos, and lead time for a specific product by ID.
+
+### Order Lifecycle & Kanban Management
+- **`list_orders`**: Query production orders with filtering by Kanban status (`pending`, `confirmed`, `printing`, `post_processing`, `ready`, `shipped`, `completed`, `cancelled`), customer search, and pagination.
+- **`get_order_details`**: Retrieve full order manifest by ID including items, 3D model download links, chosen materials, and shipping status.
+- **`update_order_status`**: Advance or change an order Kanban stage and dispatch studio timeline events with optional comments.
+- **`update_order`**: Modify order total price or update customer internal notes.
+- **`cancel_order`**: Terminate an order with an explicit audit reason.
+
+### Shipping & Nova Poshta Logistics
+- **`create_nova_poshta_waybill`**: Generate an electronic waybill (TTN) using studio sender warehouse and recipient details.
+- **`print_waybill`**: Retrieve official PDF document URL for printing package stickers and shipping marks.
+- **`track_shipment`**: Query real-time delivery status and latest Nova Poshta tracking checkpoints.
+- **`get_delivery_settings`**: Inspect sender branch, pickup address, and enabled delivery channels.
+
+### Customer Directory & CRM
+- **`list_customers`**: Search customer directory by name, phone, or email with total orders count and lifetime spend.
+- **`get_customer_profile`**: Retrieve complete customer profile, lifetime value, breakdown of orders by status, and order history.
 
 ---
 
