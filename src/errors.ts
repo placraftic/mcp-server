@@ -57,3 +57,16 @@ export function mapHttpErrorToMcpError(err: unknown): McpError {
   const message = err instanceof Error ? err.message : String(err);
   return new McpError(ErrorCode.InternalError, `Connection to Placraftic failed: ${message}`);
 }
+
+export function formatErrorResult(err: unknown) {
+  const mcpError = mapHttpErrorToMcpError(err);
+  return {
+    isError: true,
+    content: [
+      {
+        type: "text" as const,
+        text: `Error: ${mcpError.message}`,
+      },
+    ],
+  };
+}

@@ -1,11 +1,24 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { PlacrafticClient } from "../client.js";
-import { mapHttpErrorToMcpError } from "../errors.js";
+import { formatErrorResult } from "../errors.js";
 
 interface StudioInfoData {
   studioId: number;
   studioTitle: string;
   apiKeyName: string;
+  slug?: string;
+  tagline?: string;
+  currency?: {
+    code: string;
+    name?: string;
+    symbol?: string;
+  };
+  pricing?: {
+    markupPercentage?: string;
+    minimumPrice?: string;
+    hourlyRate?: string;
+    setupCost?: string;
+  };
 }
 
 export function registerStudioTool(server: McpServer, client: PlacrafticClient) {
@@ -19,23 +32,23 @@ export function registerStudioTool(server: McpServer, client: PlacrafticClient) 
           method: "GET",
         });
 
-        const formatted = {
-          studioId: response.data.studioId,
-          studioTitle: response.data.studioTitle,
-          apiKeyName: response.data.apiKeyName,
-          latencyMs: response.latencyMs,
-        };
-
         return {
           content: [
             {
               type: "text" as const,
-              text: JSON.stringify(formatted, null, 2),
+              text: JSON.stringify(
+                {
+                  ...response.data,
+                  latencyMs: response.latencyMs,
+                },
+                null,
+                2,
+              ),
             },
           ],
         };
       } catch (err) {
-        throw mapHttpErrorToMcpError(err);
+        return formatErrorResult(err);
       }
     },
   );

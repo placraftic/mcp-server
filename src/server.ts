@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { loadConfig } from "./config.js";
 import { PlacrafticClient } from "./client.js";
+import { registerAllResources } from "./resources/index.js";
 import { registerAllTools } from "./tools/index.js";
 
 export function createServer() {
@@ -13,6 +14,7 @@ export function createServer() {
     version: config.serverVersion,
   });
 
+  registerAllResources(server, client);
   registerAllTools(server, client, config);
 
   return { server, client, config };
