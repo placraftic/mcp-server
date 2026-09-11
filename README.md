@@ -86,7 +86,19 @@ The Placraftic MCP server exposes 6 live catalog, shipping, and studio resources
 
 ---
 
+## MCP Prompts
+
+The Placraftic MCP server includes 4 built-in workflow prompt templates that appear as slash commands or suggested actions in Claude Desktop and Cursor IDE:
+
+- **`daily_production_standup`**: Zero-argument prompt that inspects active `printing` and `pending` orders, checks printer fleet utilization, groups queued jobs by material and print quality to minimize spool changeovers, and delivers an actionable morning briefing in Ukrainian.
+- **`pack_and_ship_order`**: Fulfillment workflow taking `orderId`: verifies order readiness, checks sender/recipient branches, prompts for confirmation to create a Nova Poshta electronic waybill (TTN), retrieves the printable sticker PDF, updates order status to `shipped`, and drafts customer notification text.
+- **`quote_and_consult`**: Technical consulting workflow taking `filePath` and optional `requirements`: evaluates application strength and temperature requirements, recommends optimal material and layer height, runs quote calculations, and generates a structured cost estimate and advice.
+- **`customer_support_inquiry`**: Omnichannel care assistant taking `customerQuery` and optional `contactInfo`: looks up customer order history, queries real-time tracking checkpoints, and drafts an empathetic, professional reply in Ukrainian with one-click dispatch via `send_inbox_reply`.
+
+---
+
 ## Available Tools
+
 
 ### System & Identity
 - **`ping`**: Healthcheck returning server version, timestamp, and API round-trip latency.

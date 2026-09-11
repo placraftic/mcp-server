@@ -4,6 +4,7 @@ import { loadConfig } from "./config.js";
 import { PlacrafticClient } from "./client.js";
 import { registerAllResources } from "./resources/index.js";
 import { registerAllTools } from "./tools/index.js";
+import { registerAllPrompts } from "./prompts/index.js";
 
 export function createServer() {
   const config = loadConfig();
@@ -16,9 +17,11 @@ export function createServer() {
 
   registerAllResources(server, client);
   registerAllTools(server, client, config);
+  registerAllPrompts(server, client);
 
   return { server, client, config };
 }
+
 
 export async function startServer() {
   const { server, config } = createServer();
