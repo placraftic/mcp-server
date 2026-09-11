@@ -13,6 +13,9 @@ import { registerShippingTools } from "./shipping.js";
 import { registerCustomersTools } from "./customers.js";
 import { registerQuotingTools } from "./quoting.js";
 import { registerSlicingTools } from "./slicing.js";
+import { registerInboxTools } from "./inbox.js";
+import { registerAbandonedQuotesTools } from "./abandoned_quotes.js";
+import { registerAnalyticsTools } from "./analytics.js";
 
 export function registerAllTools(server: McpServer, client: PlacrafticClient, config: ServerConfig) {
   registerPingTool(server, client, config);
@@ -27,5 +30,8 @@ export function registerAllTools(server: McpServer, client: PlacrafticClient, co
   registerCustomersTools(server, client);
   registerQuotingTools(server, client);
   registerSlicingTools(server, client);
+  registerInboxTools(server, client);
+  registerAbandonedQuotesTools(server, client);
+  registerAnalyticsTools(server, client);
 }
 

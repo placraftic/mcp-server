@@ -91,4 +91,52 @@ export class PlacrafticClient {
       metadata: json?.metadata,
     };
   }
+
+  public async get<T>(
+    endpoint: string,
+    query?: Record<string, string | number | boolean | undefined | null>,
+  ): Promise<{ data: T; latencyMs: number; metadata?: Record<string, unknown> }> {
+    let cleanEndpoint = endpoint;
+    if (query) {
+      const searchParams = new URLSearchParams();
+      for (const [key, value] of Object.entries(query)) {
+        if (value !== undefined && value !== null) {
+          searchParams.append(key, String(value));
+        }
+      }
+      const qs = searchParams.toString();
+      if (qs) {
+        cleanEndpoint += (endpoint.includes("?") ? "&" : "?") + qs;
+      }
+    }
+    return this.request<T>(cleanEndpoint, { method: "GET" });
+  }
+
+  public async post<T>(
+    endpoint: string,
+    body?: unknown,
+  ): Promise<{ data: T; latencyMs: number; metadata?: Record<string, unknown> }> {
+    const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
+    return this.request<T>(endpoint, {
+      method: "POST",
+      body: isFormData ? (body as FormData) : (body !== undefined ? JSON.stringify(body) : undefined),
+    });
+  }
+
+  public async patch<T>(
+    endpoint: string,
+    body?: unknown,
+  ): Promise<{ data: T; latencyMs: number; metadata?: Record<string, unknown> }> {
+    return this.request<T>(endpoint, {
+      method: "PATCH",
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+  }
+
+  public async delete<T>(
+    endpoint: string,
+  ): Promise<{ data: T; latencyMs: number; metadata?: Record<string, unknown> }> {
+    return this.request<T>(endpoint, { method: "DELETE" });
+  }
 }
+

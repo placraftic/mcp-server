@@ -127,6 +127,20 @@ The Placraftic MCP server exposes 6 live catalog, shipping, and studio resources
 - **`get_slicing_status`**: Check asynchronous slicing progress, status (`pending`, `processing`, `done`, `failed`), filament consumption, print time, and error diagnostics by `jobId`.
 - **`create_order`**: Create a complete production order directly from the agent. Accepts customer contact details, one or more local 3D model files, selected materials, qualities, quantities, optional finishings, and delivery preferences.
 
+### Unified Support Inbox & Omnichannel CRM
+- **`list_inbox_threads`**: List active customer conversations across Telegram, Instagram, email, and web portal with unread status and last message timestamps.
+- **`get_conversation_messages`**: Retrieve complete chronological message history and attachments for a customer thread.
+- **`send_inbox_reply`**: Send outbound messages directly to customers across Telegram or Instagram, with optional canned templates or attachments.
+- **`list_canned_responses`**: List preconfigured studio quick-reply templates for fast customer communication.
+- **`create_canned_response`**: Create new studio quick-reply templates with titles, shortcuts, and bodies.
+
+### Abandoned Quotes Recovery
+- **`list_abandoned_quotes`**: List unfinished 3D print quote checkouts with customer contact details, item counts, and direct recovery links.
+- **`review_abandoned_quote`**: Mark an abandoned quote lead as reviewed/reminded to track follow-up and prevent duplicate customer outreach.
+
+### Studio Production & Financial Analytics
+- **`get_studio_stats`**: Aggregate financial metrics (GMV/revenue, completed orders count, average order value), Kanban status breakdown, active printer fleet utilization, and top materials for a given period (`today`, `this_week`, `this_month`, `last_30_days`).
+
 ---
 
 ## Development
