@@ -1,0 +1,20 @@
+# Smithery configuration for Placraftic MCP Server
+# https://smithery.ai
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    required:
+      - PLACRAFTIC_API_KEY
+    properties:
+      PLACRAFTIC_API_KEY:
+        type: string
+        description: Placraftic Studio API key (pk_live_...)
+      PLACRAFTIC_BASE_URL:
+        type: string
+        default: https://placraftic.com/api/v1
+        description: Placraftic Public API base URL
+  commandFunction:
+    - npx
+    - -y
+    - "@placraftic/mcp-server"
