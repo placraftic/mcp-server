@@ -1,6 +1,6 @@
 {
   "name": "@placraftic/mcp-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Model Context Protocol (MCP) server for Placraftic 3D printing studio operations",
   "type": "module",
   "main": "./dist/src/index.js",
