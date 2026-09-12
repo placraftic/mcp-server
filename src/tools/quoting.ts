@@ -10,6 +10,7 @@ export interface QuotePendingData {
 }
 
 export interface QuoteCalculatedData {
+  quantity?: number;
   totalPrice: {
     amount: string;
     currency: string;
@@ -177,13 +178,27 @@ export function registerQuotingTools(server: McpServer, client: PlacrafticClient
           }
         }
 
+        const quoteData = response.data as QuoteCalculatedData;
+        const requestedQuantity = quantity || 1;
+        const perUnitAmount = Number(quoteData.perUnitPrice?.amount || 0);
+        const setupCostAmount = Number(quoteData.setupCost?.amount || 0);
+        const calculatedBatchTotal = (perUnitAmount * requestedQuantity + setupCostAmount).toFixed(2);
+
         return {
           content: [
             {
               type: "text" as const,
               text: JSON.stringify(
                 {
-                  quote: response.data,
+                  quote: {
+                    ...quoteData,
+                    quantity: requestedQuantity,
+                    totalPrice: {
+                      ...quoteData.totalPrice,
+                      amount: calculatedBatchTotal,
+                    },
+                    formula: `(${perUnitAmount.toFixed(2)} [perUnit] * ${requestedQuantity} [quantity]) + ${setupCostAmount.toFixed(2)} [setupCost] = ${calculatedBatchTotal}`,
+                  },
                   latencyMs: response.latencyMs,
                 },
                 null,
