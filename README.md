@@ -107,8 +107,12 @@ The Placraftic MCP server includes 4 built-in workflow prompt templates that app
 ### Catalog & Fleet Management
 - **`list_materials`**: List available materials (filaments, resins) with optional filtering by `technology`, `color`, and `inStockOnly`.
 - **`get_material`**: Retrieve full specifications, stock levels, and price per kg for a specific material by numeric ID.
+- **`list_technologies`**: List all print technologies (FDM, SLA, SLS, etc.) with the numeric IDs required by `create_printer`/`update_printer`.
 - **`list_printers`**: List all 3D printers in the studio fleet with optional filtering by `technology` and operational `status`.
 - **`get_printer`**: Retrieve hardware details, maintenance notes, next maintenance date, and active print queue for a specific printer.
+- **`create_printer`**: Register a new 3D printer in the studio fleet.
+- **`update_printer`**: Partially update a printer's name, technology, status, model, build volume, or maintenance info.
+- **`delete_printer`**: Permanently remove a printer from the studio fleet.
 - **`list_qualities`**: List configured slicing profiles and layer heights with optional filtering by `technology` and `activeOnly`.
 - **`get_quality`**: Retrieve exact layer height, nozzle diameter, speed mode, and infill parameters for a quality profile.
 - **`list_finishings`**: List all post-processing finishing services (vapor smoothing, painting, sanding) with optional `technology` filter.
