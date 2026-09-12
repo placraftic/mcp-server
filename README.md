@@ -67,7 +67,7 @@ claude mcp add placraftic -- npx -y @placraftic/mcp-server
 | Variable | Description | Default |
 | :--- | :--- | :--- |
 | `PLACRAFTIC_API_KEY` | Studio API token generated in `/api-keys` (required for authenticated operations) | (none) |
-| `PLACRAFTIC_BASE_URL` | Base URL for Placraftic Public REST API | `https://placraftic.com/api/v1` |
+| `PLACRAFTIC_BASE_URL` | Base URL for Placraftic Public REST API | `https://api.placraftic.com/v1` |
 
 ---
 

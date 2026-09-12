@@ -12,7 +12,7 @@ startCommand:
         description: Placraftic Studio API key (pk_live_...)
       PLACRAFTIC_BASE_URL:
         type: string
-        default: https://placraftic.com/api/v1
+        default: https://api.placraftic.com/v1
         description: Placraftic Public API base URL
   commandFunction:
     - npx

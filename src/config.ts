@@ -12,7 +12,7 @@ export interface ServerConfig {
 
 export function loadConfig(): ServerConfig {
   const apiKey = process.env.PLACRAFTIC_API_KEY?.trim() ?? "";
-  const rawBaseUrl = process.env.PLACRAFTIC_BASE_URL?.trim() || "https://placraftic.com/api/api/v1";
+  const rawBaseUrl = process.env.PLACRAFTIC_BASE_URL?.trim() || "https://api.placraftic.com/v1";
   const baseUrl = rawBaseUrl.replace(/\/+$/, "");
 
   return {
