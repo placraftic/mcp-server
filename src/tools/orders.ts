@@ -283,7 +283,7 @@ export function registerOrdersTools(server: McpServer, client: PlacrafticClient)
 
   server.tool(
     "create_order",
-    "Submit a new production order with customer contact info, 3D model files (STL, OBJ, 3MF, STEP), materials, and delivery preferences",
+    "Submit a new production order with customer contact info, 3D model files (STL, OBJ, 3MF, STEP), materials, and delivery preferences. Note: this MCP server runs locally on the user's computer and reads files directly from filePath without requiring chat upload.",
     {
       customer: z.object({
         firstName: z.string().describe("Customer first name"),
@@ -297,7 +297,11 @@ export function registerOrdersTools(server: McpServer, client: PlacrafticClient)
           z.object({
             materialId: z.number().int().positive().describe("Material numeric ID from list_materials"),
             printingQualityId: z.number().int().positive().describe("Printing quality profile ID from list_qualities"),
-            filePath: z.string().describe("Local filesystem path to 3D model file (.stl, .obj, .3mf, .step)"),
+            filePath: z
+              .string()
+              .describe(
+                "Absolute or relative path to the 3D model file on the user's computer (e.g. /Users/.../model.stl). Direct local filesystem access is available.",
+              ),
             quantity: z.number().int().positive().optional().describe("Number of units to manufacture (default: 1)"),
             finishingIds: z.array(z.number().int().positive()).optional().describe("Array of post-processing finishing service IDs"),
           }),

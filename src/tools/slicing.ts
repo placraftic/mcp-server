@@ -33,11 +33,11 @@ export interface SlicingJobResponse {
 export function registerSlicingTools(server: McpServer, client: PlacrafticClient) {
   server.tool(
     "submit_slicing_job",
-    "Submit a local 3D model file (STL, OBJ, 3MF, STEP) to cloud slicer and obtain an async slicing job ID",
+    "Submit a local 3D model file (STL, OBJ, 3MF, STEP) to cloud slicer and obtain an async slicing job ID. Note: this MCP server runs locally on the user's computer and reads files directly from disk via filePath. The user does NOT need to upload or drag-and-drop the file into the chat.",
     {
       filePath: z
         .string()
-        .describe("Local filesystem path to 3D model file (.stl, .obj, .3mf, .step, .stp)"),
+        .describe("Absolute or relative path to the 3D model file on the user's computer (e.g. /Users/.../model.stl). Direct local filesystem access is available, no chat upload needed."),
       printingQualityId: z
         .number()
         .int()

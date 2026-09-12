@@ -51,11 +51,11 @@ export interface QuoteCalculatedData {
 export function registerQuotingTools(server: McpServer, client: PlacrafticClient) {
   server.tool(
     "calculate_quote",
-    "Upload a local 3D model file (STL, OBJ, 3MF, STEP) and compute an accurate manufacturing cost quote with material and print time breakdown",
+    "Compute an accurate manufacturing cost quote for a local 3D model file (.stl, .obj, .3mf, .step, .stp). Note: this MCP server runs locally on the user's computer and reads files directly from disk via filePath (e.g. /Users/...). The user does NOT need to upload or drag-and-drop the file into the chat.",
     {
       filePath: z
         .string()
-        .describe("Local filesystem path to 3D model file (.stl, .obj, .3mf, .step, .stp)"),
+        .describe("Absolute or relative path to the 3D model file on the user's computer (e.g. /Users/.../model.stl). Direct local filesystem access is available, no chat upload needed."),
       materialId: z
         .number()
         .int()
