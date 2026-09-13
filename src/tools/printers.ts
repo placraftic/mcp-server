@@ -269,4 +269,74 @@ export function registerPrintersTools(server: McpServer, client: PlacrafticClien
       }
     },
   );
+
+  server.tool(
+    "get_printer_telemetry",
+    "Retrieve live IoT hardware telemetry (hotend/bed temperatures, active job progress %, print time remaining, and status) from a connected 3D printer",
+    {
+      id: z.number().int().positive().describe("Unique numeric ID of the printer"),
+      refresh: z.boolean().optional().describe("Force live network query to machine (default: false)"),
+    },
+    async ({ id, refresh }) => {
+      try {
+        const qs = refresh ? "?refresh=1" : "";
+        const response = await client.request<Record<string, unknown>>(`/printers/${id}/telemetry${qs}`, {
+          method: "GET",
+        });
+
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(
+                {
+                  telemetry: response.data,
+                  latencyMs: response.latencyMs,
+                },
+                null,
+                2,
+              ),
+            },
+          ],
+        };
+      } catch (err) {
+        return formatErrorResult(err);
+      }
+    },
+  );
+
+  server.tool(
+    "control_printer_hardware",
+    "Send remote machine control command ('pause', 'resume', or 'cancel') to a connected 3D printer",
+    {
+      id: z.number().int().positive().describe("Unique numeric ID of the printer"),
+      action: z.enum(["pause", "resume", "cancel"]).describe("Control action to send to the machine"),
+    },
+    async ({ id, action }) => {
+      try {
+        const response = await client.request<Record<string, unknown>>(`/printers/${id}/control`, {
+          method: "POST",
+          body: JSON.stringify({ action }),
+        });
+
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: JSON.stringify(
+                {
+                  result: response.data,
+                  latencyMs: response.latencyMs,
+                },
+                null,
+                2,
+              ),
+            },
+          ],
+        };
+      } catch (err) {
+        return formatErrorResult(err);
+      }
+    },
+  );
 }
